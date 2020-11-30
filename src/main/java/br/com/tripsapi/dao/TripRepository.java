@@ -69,4 +69,9 @@ public class TripRepository {
 
 		return trips;
 	}
+
+	public List<Trip> findByCity(String country, String city) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
