@@ -8,7 +8,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 
-import br.com.tripsapi.model.Trip;
+import br.com.tripsapi.model.Trip; 
 
 public class TripRepository {
 
@@ -61,7 +61,7 @@ public class TripRepository {
 		// consumed is a reserver word in DynamoDB
 		//expression.put("#consumed", "consumed");
 
-		final DynamoDBQueryExpression<Study> queryExpression = new DynamoDBQueryExpression<Trip>()
+		final DynamoDBQueryExpression<Trip> queryExpression = new DynamoDBQueryExpression<Trip>()
 				//.withIndexName("consumedIndex").withConsistentRead(false) gui:comentado pois nao segue indice, ou segue?
 				.withKeyConditionExpression("Country = :val1 and city=:val2").withExpressionAttributeValues(eav)
 				.withExpressionAttributeNames(expression);
