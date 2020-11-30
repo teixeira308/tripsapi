@@ -19,15 +19,14 @@ public class TripRepository {
 		return trip;
 	}
 
-	public List<Trip> findByPeriod(final String topic, final String starts, final String ends) {
+	public List<Trip> findByPeriod(final String starts, final String ends) {
 
 		final Map<String, AttributeValue> eav = new HashMap<String, AttributeValue>();
-		eav.put(":val1", new AttributeValue().withS(topic));
-		eav.put(":val2", new AttributeValue().withS(starts));
-		eav.put(":val3", new AttributeValue().withS(ends));
+		eav.put(":val1", new AttributeValue().withS(starts));
+		eav.put(":val2", new AttributeValue().withS(ends));
 
 		final DynamoDBQueryExpression<Trip> queryExpression = new DynamoDBQueryExpression<Trip>()
-				.withKeyConditionExpression("topic = :val1 and date between :val2 and :val3")
+				.withKeyConditionExpression("date between :val1 and :val2")
 				.withExpressionAttributeValues(eav);
 
 		final List<Trip> trips = mapper.query(Trip.class, queryExpression);
@@ -57,7 +56,7 @@ public class TripRepository {
 
 		final Map<String, String> expression = new HashMap<>();
 
-		//guilherme: comentei a linha 62 pq não entra no nome das variaveis
+		//guilherme: comentei a linha 62 pq nï¿½o entra no nome das variaveis
 		// consumed is a reserver word in DynamoDB
 		//expression.put("#consumed", "consumed");
 
