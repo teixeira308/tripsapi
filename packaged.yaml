@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: 'study-datalake
+Description: 'tripsapi
 
-  Rest API to manage a Data Lake of study links
+  Rest API to manage Trips
 
   '
 Globals:
@@ -9,84 +9,85 @@ Globals:
     MemorySize: 512
     Timeout: 20
 Outputs:
-  CreateStudyRecordFunction:
-    Description: CreateStudyRecord Lambda Function ARN
+  CreateTripRecordFunction:
+    Description: CreateTripRecord Lambda Function ARN
     Value:
       Fn::GetAtt:
-      - CreateStudyRecordFunction
+      - CreateTripRecordFunction
       - Arn
-  GetStudyRecordsByIsConsumedFunction:
-    Description: GetStudyRecordsByIsConsumed Lambda Function ARN
+  GetTripRecordsByCityFunction:
+    Description: GetTripRecordsByCity Lambda Function ARN
     Value:
       Fn::GetAtt:
-      - GetStudyRecordsByIsConsumedFunction
+      - GetTripRecordsByCityFunction
       - Arn
-  GetStudyRecordsByPeriodFunction:
-    Description: GetStudyRecordsByPeriod Lambda Function ARN
+  GetTriRecordsByCountryFunction:
+    Description: GetTriRecordsByCountry Lambda Function ARN
     Value:
       Fn::GetAtt:
-      - GetStudyRecordsByPeriodFunction
+      - GetTriRecordsByCountryFunction
       - Arn
-  GetStudyRecordsByTagFunction:
-    Description: GetStudyRecordsByTag Lambda Function ARN
+  GetTripRecordsByPeriodFunction:
+    Description: GetTripRecordsByPeriod Lambda Function ARN
     Value:
       Fn::GetAtt:
-      - GetStudyRecordsByTagFunction
+      - GetTripRecordsByPeriodFunction
       - Arn
 Resources:
-  CreateStudyRecordFunction:
+  CreateTripRecordFunction:
     Properties:
       CodeUri: s3://aws-sam-fiap-deployt/896a140ec24d1c84f917b82d6bdddd3f
       Events:
         CreateStudyRecord:
           Properties:
             Method: post
-            Path: /study
+            Path: /trips
           Type: Api
-      Handler: br.com.iwe.handler.CreateStudyRecord::handleRequest
+      Handler: br.com.tripsapi.handler.CreateTripRecord::handleRequest
       Runtime: java8
     Type: AWS::Serverless::Function
-  GetStudyRecordsByIsConsumedFunction:
+  GetTripRecordsByPeriodFunction:
     Properties:
       CodeUri: s3://aws-sam-fiap-deployt/896a140ec24d1c84f917b82d6bdddd3f
       Events:
         GetStudyRecordsByIsConsumed:
           Properties:
             Method: get
-            Path: /study/{topic}/findByIsConsumed
-            RequestParameters:
-            - method.request.querystring.isconsumed
-          Type: Api
-      Handler: br.com.iwe.handler.GetStudyRecordsByIsConsumed::handleRequest
-      Runtime: java8
-    Type: AWS::Serverless::Function
-  GetStudyRecordsByPeriodFunction:
-    Properties:
-      CodeUri: s3://aws-sam-fiap-deployt/896a140ec24d1c84f917b82d6bdddd3f
-      Events:
-        GetStudyRecordsByPeriod:
-          Properties:
-            Method: get
-            Path: /study/{topic}/findByPeriod
+            Path: /trips?start={starts}&end={ends}
             RequestParameters:
             - method.request.querystring.starts
             - method.request.querystring.ends
           Type: Api
-      Handler: br.com.iwe.handler.GetStudyRecordsByPeriod::handleRequest
+      Handler: br.com.tripsapi.handler.GetTripRecordsByPeriod::handleRequest
       Runtime: java8
     Type: AWS::Serverless::Function
-  GetStudyRecordsByTagFunction:
+  GetTripRecordsByCityFunction:
+    Properties:
+      CodeUri: s3://aws-sam-fiap-deployt/896a140ec24d1c84f917b82d6bdddd3f
+      Events:
+        GetTripRecordsByCityFunction:
+          Properties:
+            Method: get
+            Path: /trips/{Country}/?city={City}
+            RequestParameters:
+            - method.request.querystring.Country
+            - method.request.querystring.City
+          Type: Api
+      Handler: br.com.tripsapi.handler.GetTripRecordsByCity::handleRequest
+      Runtime: java8
+    Type: AWS::Serverless::Function
+  GetTriRecordsByCountryFunction:
     Properties:
       CodeUri: s3://aws-sam-fiap-deployt/896a140ec24d1c84f917b82d6bdddd3f
       Events:
         GetStudyRecordsByTag:
           Properties:
             Method: get
-            Path: /study/{topic}/findByTag
+            Path: /trips/{Country}
             RequestParameters:
-            - method.request.querystring.tag
+            - method.request.querystring.Country
           Type: Api
-      Handler: br.com.iwe.handler.GetStudyRecordsByTag::handleRequest
+      Handler: br.com.tripsapi.handler.GetTripRecordsByCountry::handleRequest
       Runtime: java8
     Type: AWS::Serverless::Function
 Transform: AWS::Serverless-2016-10-31
