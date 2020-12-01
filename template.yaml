@@ -90,35 +90,35 @@ Resources:
   TripTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: study
+      TableName: trip
       AttributeDefinitions:
-        - AttributeName: topic
+        - AttributeName: country
           AttributeType: S
         - AttributeName: dateTimeCreation
           AttributeType: S
-        - AttributeName: tag
+        - AttributeName: city
           AttributeType: S
-        - AttributeName: consumed
+        - AttributeName: reason
           AttributeType: S            
       KeySchema:
-        - AttributeName: topic
+        - AttributeName: country
           KeyType: HASH
         - AttributeName: dateTimeCreation
           KeyType: RANGE
       LocalSecondaryIndexes: 
-        - IndexName: tagIndex
+        - IndexName: cityIndex
           KeySchema: 
-            - AttributeName: topic
+            - AttributeName: country
               KeyType: HASH
-            - AttributeName: tag
+            - AttributeName: city
               KeyType: RANGE
           Projection:
              ProjectionType: ALL 
-        - IndexName: consumedIndex
+        - IndexName: reasonIndex
           KeySchema: 
-            - AttributeName: topic
+            - AttributeName: country
               KeyType: HASH
-            - AttributeName: consumed
+            - AttributeName: reason
               KeyType: RANGE
           Projection:
              ProjectionType: ALL      
