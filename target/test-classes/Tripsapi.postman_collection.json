@@ -1,12 +1,12 @@
 {
 	"info": {
 		"_postman_id": "ef9ef35f-a302-4fa0-b0f0-b15a387362ba",
-		"name": "Study DataLake",
+		"name": "Trip API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "findByPeriod",
+			"name": "TipRecordsByCity",
 			"request": {
 				"method": "GET",
 				"header": [],
