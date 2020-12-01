@@ -27,7 +27,7 @@ public class TripRepository {
 		eav.put(":val2", new AttributeValue().withS(ends));
 
 		final DynamoDBQueryExpression<Trip> queryExpression = new DynamoDBQueryExpression<Trip>()
-				.withKeyConditionExpression("date between :val1 and :val2").withExpressionAttributeValues(eav);
+				.withKeyConditionExpression("dateTimeCreation between :val1 and :val2").withExpressionAttributeValues(eav);
 
 		final List<Trip> trips = mapper.query(Trip.class, queryExpression);
 
