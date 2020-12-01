@@ -27,7 +27,8 @@ public class TripRepository {
 		eav.put(":val2", new AttributeValue().withS(ends));
 
 		final DynamoDBQueryExpression<Trip> queryExpression = new DynamoDBQueryExpression<Trip>()
-				.withKeyConditionExpression("dateTimeCreation between :val1 and :val2").withExpressionAttributeValues(eav);
+				.withKeyConditionExpression("dateTimeCreation between :val1 and :val2")
+				.withExpressionAttributeValues(eav);
 
 		final List<Trip> trips = mapper.query(Trip.class, queryExpression);
 
@@ -40,7 +41,8 @@ public class TripRepository {
 		eav.put(":val1", new AttributeValue().withS(country));
 
 		final DynamoDBQueryExpression<Trip> queryExpression = new DynamoDBQueryExpression<Trip>()
-				.withKeyConditionExpression("country = :val1").withExpressionAttributeValues(eav);
+				.withKeyConditionExpression("country = :val1")
+				.withExpressionAttributeValues(eav);
 
 		List<Trip> trips = new ArrayList<Trip>();
 		try {
@@ -60,7 +62,8 @@ public class TripRepository {
 
 		final DynamoDBQueryExpression<Trip> queryExpression = new DynamoDBQueryExpression<Trip>()
 				.withIndexName("cityIndex").withConsistentRead(false)
-				.withKeyConditionExpression("country = :val1 and city=:val2").withExpressionAttributeValues(eav);
+				.withKeyConditionExpression("country = :val1 and city=:val2")
+				.withExpressionAttributeValues(eav);
 
 		List<Trip> trips = new ArrayList<Trip>();
 		try {
