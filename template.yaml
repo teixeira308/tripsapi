@@ -45,11 +45,10 @@ Resources:
        GetTripRecordsByCity:
          Type: Api
          Properties:
-           Path: /trips/{Country}/?city={City}
+           Path: /trips/{country}/findByCity
            Method: get
            RequestParameters:
-              - method.request.querystring.starts
-              - method.request.querystring.ends
+             - method.request.querystring.city
               
   GetTriRecordsByCountryFunction:
     Type: AWS::Serverless::Function
@@ -80,7 +79,7 @@ Resources:
        GetTripRecordsByPeriod:
          Type: Api
          Properties:
-           Path: /trips?start={starts}&end={ends}
+           Path: /trips/findByPeriod
            Method: get
            RequestParameters:
               - method.request.querystring.start
