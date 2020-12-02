@@ -1,93 +1,144 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: 'tripsapi
+Transform: AWS::Serverless-2016-10-31
+Description: 'Trip API
 
-  Rest API to manage Trips
+  Rest API to manage a Trip
 
   '
 Globals:
   Function:
+    Timeout: 200
     MemorySize: 512
-    Timeout: 20
-Outputs:
+    Environment:
+      Variables:
+        TABLE_NAME:
+          Ref: TripTable
+        ENDPOINT_OVERRIDE: ''
+Resources:
   CreateTripRecordFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3://aws-sam-fiap-deployt/896a140ec24d1c84f917b82d6bdddd3f
+      Handler: br.com.tripsapi.handler.CreateTripRecord::handleRequest
+      Runtime: java8
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: TripTable
+      Events:
+        CreateTripRecord:
+          Type: Api
+          Properties:
+            Path: /trips
+            Method: post
+  GetTripRecordsByPeriodFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3://aws-sam-fiap-deployt/896a140ec24d1c84f917b82d6bdddd3f
+      Handler: br.com.tripsapi.handler.GetTripRecordsByPeriod::handleRequest
+      Runtime: java8
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: TripTable
+      Events:
+        GetTripRecordsByPeriod:
+          Type: Api
+          Properties:
+            Path: /trips/{country}/findByPeriod
+            Method: get
+            RequestParameters:
+            - method.request.querystring.start
+            - method.request.querystring.end
+  GetTripRecordsByCountryFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3://aws-sam-fiap-deployt/896a140ec24d1c84f917b82d6bdddd3f
+      Handler: br.com.tripsapi.handler.GetTripRecordsByCountry::handleRequest
+      Runtime: java8
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: TripTable
+      Events:
+        GetTripRecordsByCountry:
+          Type: Api
+          Properties:
+            Path: /trips/{country}
+            Method: get
+  GetTripRecordsByCityFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3://aws-sam-fiap-deployt/896a140ec24d1c84f917b82d6bdddd3f
+      Handler: br.com.tripsapi.handler.GetTripRecordsByCity::handleRequest
+      Runtime: java8
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: TripTable
+      Events:
+        GetTripRecordsByCity:
+          Type: Api
+          Properties:
+            Path: /trips/{country}/findByCity
+            Method: get
+            RequestParameters:
+            - method.request.querystring.city
+  TripTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: trip
+      AttributeDefinitions:
+      - AttributeName: country
+        AttributeType: S
+      - AttributeName: dateTimeCreation
+        AttributeType: S
+      - AttributeName: city
+        AttributeType: S
+      - AttributeName: reason
+        AttributeType: S
+      KeySchema:
+      - AttributeName: country
+        KeyType: HASH
+      - AttributeName: dateTimeCreation
+        KeyType: RANGE
+      LocalSecondaryIndexes:
+      - IndexName: cityIndex
+        KeySchema:
+        - AttributeName: country
+          KeyType: HASH
+        - AttributeName: city
+          KeyType: RANGE
+        Projection:
+          ProjectionType: ALL
+      - IndexName: reasonIndex
+        KeySchema:
+        - AttributeName: country
+          KeyType: HASH
+        - AttributeName: reason
+          KeyType: RANGE
+        Projection:
+          ProjectionType: ALL
+      BillingMode: PAY_PER_REQUEST
+Outputs:
+  CreateStudyRecordFunction:
     Description: CreateTripRecord Lambda Function ARN
     Value:
       Fn::GetAtt:
       - CreateTripRecordFunction
       - Arn
-  GetTripRecordsByCityFunction:
-    Description: GetTripRecordsByCity Lambda Function ARN
-    Value:
-      Fn::GetAtt:
-      - GetTripRecordsByCityFunction
-      - Arn
-  GetTriRecordsByCountryFunction:
-    Description: GetTriRecordsByCountry Lambda Function ARN
-    Value:
-      Fn::GetAtt:
-      - GetTriRecordsByCountryFunction
-      - Arn
   GetTripRecordsByPeriodFunction:
-    Description: GetTripRecordsByPeriod Lambda Function ARN
+    Description: GetTripRecordsByPeriodFunction Lambda Function ARN
     Value:
       Fn::GetAtt:
       - GetTripRecordsByPeriodFunction
       - Arn
-Resources:
-  CreateTripRecordFunction:
-    Properties:
-      CodeUri: s3://aws-sam-fiap-deployt/896a140ec24d1c84f917b82d6bdddd3f
-      Events:
-        CreateStudyRecord:
-          Properties:
-            Method: post
-            Path: /trips
-          Type: Api
-      Handler: br.com.tripsapi.handler.CreateTripRecord::handleRequest
-      Runtime: java8
-    Type: AWS::Serverless::Function
-  GetTripRecordsByPeriodFunction:
-    Properties:
-      CodeUri: s3://aws-sam-fiap-deployt/896a140ec24d1c84f917b82d6bdddd3f
-      Events:
-        GetStudyRecordsByIsConsumed:
-          Properties:
-            Method: get
-            Path: /trips?start={starts}&end={ends}
-            RequestParameters:
-            - method.request.querystring.starts
-            - method.request.querystring.ends
-          Type: Api
-      Handler: br.com.tripsapi.handler.GetTripRecordsByPeriod::handleRequest
-      Runtime: java8
-    Type: AWS::Serverless::Function
+  GetTripRecordsByCountryFunction:
+    Description: GetTripRecordsByCountryFunction Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - GetTripRecordsByCountryFunction
+      - Arn
   GetTripRecordsByCityFunction:
-    Properties:
-      CodeUri: s3://aws-sam-fiap-deployt/896a140ec24d1c84f917b82d6bdddd3f
-      Events:
-        GetTripRecordsByCityFunction:
-          Properties:
-            Method: get
-            Path: /trips/{Country}/?city={City}
-            RequestParameters:
-            - method.request.querystring.Country
-            - method.request.querystring.City
-          Type: Api
-      Handler: br.com.tripsapi.handler.GetTripRecordsByCity::handleRequest
-      Runtime: java8
-    Type: AWS::Serverless::Function
-  GetTriRecordsByCountryFunction:
-    Properties:
-      CodeUri: s3://aws-sam-fiap-deployt/896a140ec24d1c84f917b82d6bdddd3f
-      Events:
-        GetStudyRecordsByTag:
-          Properties:
-            Method: get
-            Path: /trips/{Country}
-            RequestParameters:
-            - method.request.querystring.Country
-          Type: Api
-      Handler: br.com.tripsapi.handler.GetTripRecordsByCountry::handleRequest
-      Runtime: java8
-    Type: AWS::Serverless::Function
-Transform: AWS::Serverless-2016-10-31
+    Description: GetTripRecordsByCityFunction Lambda Function ARN
+    Value: GetTripRecordsByCityFunction.Arn
