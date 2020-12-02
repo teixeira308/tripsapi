@@ -1,13 +1,13 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-    study-datalake
+    trip-api
 
     Rest API to manage a trip API
 
 Globals:
     Function:
-        Timeout: 20
+        Timeout: 200
         MemorySize: 512
         Environment:
           Variables:
@@ -64,10 +64,8 @@ Resources:
        GetTriRecordsByCountry:
          Type: Api
          Properties:
-           Path: /trips/{Country}
+           Path: /trips/{country}
            Method: get
-           RequestParameters:
-              - method.request.querystring.Country
 
   GetTripRecordsByPeriodFunction:
     Type: AWS::Serverless::Function
@@ -85,7 +83,8 @@ Resources:
            Path: /trips?start={starts}&end={ends}
            Method: get
            RequestParameters:
-              - method.request.querystring.isconsumed
+              - method.request.querystring.start
+              - method.request.querystring.end
               
   TripTable:
     Type: AWS::DynamoDB::Table
@@ -136,7 +135,7 @@ Outputs:
       
     GetTriRecordsByCountryFunction:
       Description: "GetTriRecordsByCountry Lambda Function ARN"
-      Value: !GetAtt GetTriRecordsByCountryFunction.Arn
+      Value: !GetAtt GetTripRecordsByCountryFunction.Arn
       
     GetTripRecordsByPeriodFunction:
       Description: "GetTripRecordsByPeriod Lambda Function ARN"
